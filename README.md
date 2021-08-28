@@ -1,4 +1,4 @@
-# Touch Server
+# Touch Server v.1.0.0 ベータ2
 新しいタイプの開発者向けWebサーバ。
 
 ---
