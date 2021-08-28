@@ -11,22 +11,34 @@ var server=http.createServer();
 
 //process
 server.on('request',(req, res)=>{
-	var status=404;
-	var path=`${__dirname}/404.html`;
+	try{
+		var status, path;
 
-	if(fs.existsSync(process.cwd()+req.url)==true){
-		status=200;
-		path=process.cwd()+req.url;
-	}else if(fs.existsSync(process.cwd()+req.url+'index.html')==true){
-		status=200;
-		path=process.cwd()+req.url+'index.html';
-	}else if(fs.existsSync(process.cwd()+req.url+'/index.html')==true){
-		status=200;
-		path=process.cwd()+req.url+'/index.html';
+		if(fs.existsSync(process.cwd()+req.url)){
+			status=200;
+ 			path=process.cwd()+req.url;
+		}else if(fs.existsSync(process.cwd()+req.url+'/index.html')){
+			status=200;
+			path=process.cwd()+req.url+'/index.html';
+		}else{
+			status=404;
+			path=`${__dirname}/404.html`;
+		}
+
+		res.writeHead(status, {'Content-Type': mime.lookup(path)});
+		res.write(fs.readFileSync(path, 'utf-8'));
+		res.end();
+	}catch(e){
+		if(fs.existsSync(process.cwd()+req.url+'/index.html')){
+			res.writeHead(200, {'Content-Type': mime.lookup(process.cwd()+req.url+'/index.html')});
+			res.write(fs.readFileSync(process.cwd()+req.url+'/index.html'));
+			res.end();
+		}else{
+			res.writeHead(500, {'Content-Type': 'text/html'});
+			res.write(fs.readFileSync('./500.html','utf-8'));
+			res.end();
+		}
 	}
-	res.writeHead(status, {'Content-Type': mime.lookup(path)});
-	res.write(fs.readFileSync(path));
-	res.end();
 })
 
 if(port!=null){
