@@ -1,7 +1,7 @@
 {
   "name": "touch-server",
   "version": "1.0.0",
-  "description": "The new type experimental web server for developers.",
+  "description": "The new type experimental web server for web developers.",
   "main": "index.js",
   "scripts": {
     "test": "node index.js"
