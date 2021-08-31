@@ -15,7 +15,7 @@ var server=http.createServer();
 
 function exists(path){
 	try{
-		fs.readFileSync(path, 'utf-8');
+		fs.readFileSync(path, 'utf-8')
 		return true;
 	}catch(e){
 		return false;
@@ -30,8 +30,12 @@ server.on('request',(req, res)=>{
 			res.writeHead(200, {'Content-Type': mime.lookup(process.cwd()+req.url)});
 			res.write(fs.readFileSync(process.cwd()+req.url, 'utf-8'));
 		}else if(exists(process.cwd()+req.url+'/index.html')){
-			res.writeHead(200, {'Content-Type': mime.lookup(process.cwd()+req.url+'/index.html')});
-			res.write(fs.readFileSync(process.cwd()+req.url+'/index.html','utf-8'));
+			if(req.url.slice(-1)=='/'){
+				res.writeHead(200, {'Content-Type': mime.lookup(process.cwd()+req.url+'/index.html')});
+				res.write(fs.readFileSync(process.cwd()+req.url+'/index.html','utf-8'));
+			}else{
+				res.writeHead(301, {'Location': req.url+'/'});
+			}
 		}else{
 			res.writeHead(404, {'Content-Type': 'text/html'});
 			res.write(fs.readFileSync(`${__dirname}/404.html`,'utf-8'));
